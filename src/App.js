@@ -3,27 +3,23 @@ import logo                   from './logo.svg';
 import Request                from 'superagent';
 import _                      from 'lodash';
 import './App.css';
+var baseUrl = "http://localhost:3000/api/notes";
 
 class App extends Component {
 
   constructor() {
     super();
-    // this.addNote = this.addNote.bind(this);
+    this.addNote = this.addNote.bind(this);
     // this.removeNote = this.removeNote.bind(this);
     // this.details = this.details.bind(this);
     this.state = {
-      // notes: [],
-      // title: 'Simple Note Application',
-      // body: 'note body',
-      // date: '2018-01-01',
-      // counter: 0
+      notes: []
     }
   }
 
   componentWillMount() {
     // Called the first time the component is loaded right before the component is added to the page
-    var url = "http://localhost:3000/api/notes";
-    Request.get(url).then(response => {
+    Request.get(baseUrl).then(response => {
       this.setState({
         notes: response.body.data
       });
@@ -46,32 +42,24 @@ class App extends Component {
     // Called when the component is removed
   }
 
-  // handling add note
-  // addNote(event) {
-  //   // debugger
-  //   event.preventDefault();
-  //   let title = this.refs.title.value;
-  //   let body = this.refs.body.value;
-  //   let date = this.refs.date.value;
-  //   let counter = this.state.counter;
-  //
-  //   let note = {
-  //     title,
-  //     body,
-  //     date,
-  //     counter
-  //   };
-  //   counter += 1;
-  //   let notes = this.state.notes;
-  //
-  //   notes.push(note);
-  //
-  //   this.setState({
-  //     notes: notes,
-  //     counter: counter
-  //   });
-  //   this.refs.noteForm.reset();
-  // }
+  // handle addNote
+  addNote(event) {
+    event.preventDefault();
+    var title = this.refs.title.value;
+    var body = this.refs.body.value;
+    // NOTE: date is handled from database so whenever we create a new note we will get the current date
+    // var date = this.refs.date.value;
+    // console.log("date", new Date(date));
+    Request.post(baseUrl)
+           .send({ title: title, body: body })
+           .then(res => {
+             // this.setState({
+             //   notes: notes.push(res.body)
+             // })
+             alert('Yay you did it!' + JSON.stringify(res.body));
+             this.refs.noteForm.reset();
+           });
+  }
 
   // handling removing note
   // removeNote(index) {
@@ -135,6 +123,32 @@ class App extends Component {
     return (
       <div className="container">
          <div className="App">
+
+             <form ref="noteForm">
+                 <div className="form-group row">
+
+                 <label htmlFor="title" className="col-2 col-form-label">Title</label>
+                 <div className="col-10">
+                   <input type="text" className="form-control" id="title" ref="title" placeholder="Note Title" />
+                 </div>
+
+                 <label htmlFor="body" className="col-2 col-form-label">Body</label>
+                 <div className="col-10">
+                   <textarea type="text" className="form-control" id="body" ref="body" placeholder="Note Description" ></textarea>
+                 </div>
+
+                 {/* <label htmlFor="date" className="col-2 col-form-label">Date</label>
+                 <div className="col-10">
+                   <input type="date" className="form-control" id="date" ref="date" placeholder="2018-01-01" />
+                 </div> */}
+
+                 <div className="col-12">
+                   <button className="btn btn-sm btn-success float-right" onClick={this.addNote}>Add Note</button>
+                 </div>
+               </div>
+             </form>
+           <hr />
+
           {notes}
         </div>
       </div>
