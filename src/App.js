@@ -57,8 +57,9 @@ class App extends Component {
              // this.setState({
              //   notes: notes.push(res.body)
              // })
-             alert('Yay you did it!' + JSON.stringify(res.body));
+             // alert('Yay you did it!' + JSON.stringify(res.body));
              this.refs.noteForm.reset();
+             window.location.reload(true);
            });
   }
 
@@ -78,7 +79,8 @@ class App extends Component {
           .set('Accept', 'application/json')
           .end((err, res) => {
             if(err) return console.error(err);
-            alert('Note Deleted');
+            // alert('Note Deleted');
+            window.location.reload(true);
           });
   }
 
@@ -120,6 +122,9 @@ class App extends Component {
     return (
       <div className="container">
          <div className="App">
+           <div className="jumbotron">
+             <p className="warn"><strong>WARNING: I should be handling change state (setState) when sending a post and delete request to API but, I am not that comfortable with superagent module yet so, I am not handling this yet but, I'll get back to that soon and change superagent to fetch to send requests to api</strong></p>
+           </div>
 
              <form ref="noteForm">
                  <div className="form-group row">
