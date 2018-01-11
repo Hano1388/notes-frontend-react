@@ -10,7 +10,7 @@ class App extends Component {
   constructor() {
     super();
     this.addNote = this.addNote.bind(this);
-    // this.removeNote = this.removeNote.bind(this);
+    this.removeNote = this.removeNote.bind(this);
     // this.details = this.details.bind(this);
     this.state = {
       notes: []
@@ -47,6 +47,7 @@ class App extends Component {
     event.preventDefault();
     var title = this.refs.title.value;
     var body = this.refs.body.value;
+    var notes = this.state.notes;
     // NOTE: date is handled from database so whenever we create a new note we will get the current date
     // var date = this.refs.date.value;
     // console.log("date", new Date(date));
@@ -61,32 +62,25 @@ class App extends Component {
            });
   }
 
-  // handling removing note
-  // removeNote(index) {
-  //   // console.log(index);
-  //   let notes = this.state.notes;
-  //
-  //   let note = notes.find(note => {
-  //     return note.counter === index;
-  //   });
-  //   // console.log(note);
-  //   notes.splice(note, 1);
-  //   this.setState({
-  //     notes: notes
-  //   });
-  // }
+  // handling remove note
+  removeNote(index) {
+    // console.log(index);
 
-  // handling note details
-  // details(index) {
-  //   let notes = this.state.notes;
-  //
-  //   let note = notes.find(note => {
-  //     return note.counter === index;
-  //   });
-  //
-  //   console.log('You are clicking on ');
-  //   console.log(note);
-  // }
+    // let notes = this.state.notes;
+    // let note = notes.find(note => {
+    //   return note.id === index;
+    // })
+    //
+    // console.log(note);
+    var notes = this.state.notes;
+    Request.del(baseUrl + `/${index}`)
+          .send({ id: index })
+          .set('Accept', 'application/json')
+          .end((err, res) => {
+            if(err) return console.error(err);
+            alert('Note Deleted');
+          });
+  }
 
   render() {
     // var notes = _.map(this.state.notes, (note) => {
@@ -110,7 +104,10 @@ class App extends Component {
           </div>
 
           <div className="row">
-            <div className="col-lg-10 col-md-8 col-sm-6"></div>
+            <div className="col-lg-2 col-md-2 col-sm-2">
+              <button type="button" onClick={this.removeNote.bind(null, note.id)}>Delete</button>
+            </div>
+            <div className="col-lg-8 col-md-6 col-sm-4"></div>
             <div className="col-lg-2 col-md-4 col-sm-6">
               <p>{note.date.substring(0, 10)}</p>
             </div>
@@ -154,32 +151,6 @@ class App extends Component {
       </div>
     )
   }
-
-  // render() {
-  //   let title = this.state.title;
-  //   let notes = this.state.notes;
-  //   return (
-  //     <div className="App">
-  //       <h1>{title}</h1>
-  //       <form ref="noteForm">
-  //         <input type="text" ref="title" placeholder="note title" />
-  //         <input type="text" ref="body" placeholder="what is your note about" />
-  //         <input type="date" ref="date" placeholder="2018-01-01" />
-  //         <button onClick={this.addNote}>Add Note</button>
-  //       </form>
-  //       <ul>
-  //         {notes.map((note =>
-  //           <li key={note.counter}>
-  //             {note.title} -
-  //             {note.body} -
-  //             {note.date} -
-  //             <button onClick={this.removeNote.bind(null, note.counter)}>Remove Note</button>
-  //             <button onClick={this.details.bind(null, note.counter)}>View Details</button>
-  //         </li>))}
-  //       </ul>
-  //     </div>
-  //   );
-  // }
 }
 
 export default App;
